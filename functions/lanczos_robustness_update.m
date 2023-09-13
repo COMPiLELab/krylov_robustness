@@ -39,6 +39,7 @@ if size(U, 1) <= 130
 	return
 end
 
+
 rk = size(U, 2);
 herm = ishermitian(B);
 
@@ -68,7 +69,6 @@ for j = 1:it
 		tGm = (tGm + tGm')/2; 
 	end
 	% Compute the trace of the core factor of the update
-	%d1 = sort(eig(Gm + Cm));
 	d1 = sort(eig(tGm));
 	d2 = sort(eig(Gm));
 	Xm = sum(exp(d1) .* (1 - exp(d2 - d1)));

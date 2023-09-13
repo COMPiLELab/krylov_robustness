@@ -96,8 +96,6 @@ for j = 1:min(k, nE)
 			U = zeros(nA, 1);
 			U(E(h, 1)) = 1;
 		end
-		%[Um, Xm, iter1] = sym_fun_update(A, U, B, @exp, tol, it, poles, false, debug); 
-		%Xm = lanczos_fun_update(A, U, B, @exp, tol, it, debug);
 		tmp = lanczos_robustness_update(A, U, B, tol, it, debug);
 %pause
 %------------DEBUG-------------------------

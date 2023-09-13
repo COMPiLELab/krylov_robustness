@@ -1,0 +1,20 @@
+Please see the attached code for the miobi-breakedge (and similar for the other two) in matlab.
+
+To run this, you will just need to type in this line 
+
+[robScoreNoUpdate, robScoreUpdate50] = MIOBIBreakEdge2(fname,k,topT)
+
+fname is expected to be an adjacency matrix (sparse) 
+k is the number of edges you want to remove 
+topT is the number of eigenvalues you want to use to compute the rob. score (we use 25)
+
+For example: to generate column 1 of table 2 for MIOBI-Naive and MIOBI-RC@50, you can do 
+
+(first load dt_oregon.mat) 
+
+[naive, rcat50] = MIOBIBreakEdge2(A0,543,25)
+
+A0 is the O-A dataset.
+
+
+

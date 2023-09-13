@@ -22,12 +22,7 @@ if nargin == 2
     [V, H, params, lucky] = lanczos_krylov_start(varargin{:});
 else
     % Enlarge the space that was previously built
-    %bs = size(varargin{1}, 2)/2;
-    [V, H, params, lucky] = lanczos_krylov_extend(varargin{:});
-    %V = V(:, bs + 1:end);
-    %H(1:end-bs, end-bs+1:end) = (H(end-2*bs+1:end-bs, :)' + H(1:end-bs, end-bs+1:end))/2; % enhance symmetry
-    %H(end-2*bs+1:end-bs, :) = H(1:end-bs, end-bs+1:end)';
-	
+    [V, H, params, lucky] = lanczos_krylov_extend(varargin{:});	
 end
 
 end
@@ -92,8 +87,6 @@ H(size(H, 1) + bs, size(H, 2) + bs) = 0;
 % Perform orthogonalization with modified Gram-Schimidt
 [w, H(max(1,end - 3*bs +1):end-bs, end-bs+1:end)] = mgs_orthogonalize(V, w);
 
-%H(max(1,end - 3*bs +1):end-bs, end-bs+1:end) = h;
-
 [w, H(end-bs+1:end, end-bs+1:end)] = qr(w, 0);
 if norm(H(end-bs+1:end, end-bs+1:end), 'fro') < lucky_tol
 	lucky = true;
@@ -105,15 +98,6 @@ else
 	V = V(:, [bs+1:2 * bs, 1:bs]);
 end
 
-%H(end-bs+1:end, end-bs+1:end) = r;
-
-%if size(V, 2) == bs
-%	V = [V, w];
-%else
-	%V(:, 1:bs) = V(:, bs+1:end);
-	%V(:, bs+1:end) = w;
-%	V = [V(:, bs+1:end), w];
-%end
 end
 
 %
@@ -128,11 +112,5 @@ function [w, h] = mgs_orthogonalize(V, w)
     h1 = V' * w;
     h = h + h1;
     w = w - V * h1;
-
-%h = zeros(size(V, 2), size(w, 2));
-%for j = 1 : size(V, 2)
-%    h(j,:) = (V(:,j)' * w);
-%    w = w - V(:,j) * (V(:,j)' * w);
-%end
 end
 
