@@ -96,7 +96,7 @@ for j = 1:min(k, nE)
 			U = zeros(nA, 1);
 			U(E(h, 1)) = 1;
 		end
-		tmp = lanczos_robustness_update(A, U, B, tol, it, debug);
+		tmp = trace_fun_update(A, U, B, tol, it, debug);
 %pause
 %------------DEBUG-------------------------
 %if true

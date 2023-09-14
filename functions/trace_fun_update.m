@@ -1,4 +1,4 @@
-function [Xm, iter, lucky] = lanczos_robustness_update(A, U, B, tol, it, debug)
+function [Xm, iter, lucky] = trace_fun_update(A, U, B, tol, it, debug)
 % Return the approximation of trace(expm(A + U * B * U') - expm(A)) computed with the Lanczos method 
 %
 %---------------INPUT----------------------------------------------------------------------------------------------------------------
@@ -96,14 +96,14 @@ for j = 1:it
 		Xstop = [Xstop(2:d), Xm];
 	end
 	if lucky 
-		warning('LANCZOS_ROBUSTNESS_UPDATE:: Detected lucky breakdown')
+		warning('TRACE_FUN_UPDATE:: Detected lucky breakdown')
 		break
 	end
 end 
 
 iter = j;
 if iter == it
-	warning('LANCZOS_ROBUSTNESS_UPDATE:: Reached maximum number of iterations')
+	warning('TRACE_FUN_UPDATE:: Reached maximum number of iterations')
 end
 
 

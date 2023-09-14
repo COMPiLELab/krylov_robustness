@@ -1,4 +1,4 @@
-function [Xm, iter, lucky, Um] = lanczos_fun_update(A, U, B, fun, tol, it, debug)
+function [Xm, iter, lucky, Um] = fun_update(A, U, B, fun, tol, it, debug)
 % Approximate the update fun(A + U * B * U') - fun(A) = Um * Xm * Um'. If only the core factor Xm is required then it uses Lanczos; otherwise (if also the basis Um is returned) the Arnoldi method
 %
 %---------------INPUT----------------------------------------------------------------------------------------------------------------
@@ -122,13 +122,13 @@ for j = 1:it
 		Xstop = [{Xstop{2:d}}, Xm];
 	end
 	if lucky 
-		warning('LANCZOS_FUN_UPDATE:: Detected lucky breakdown')
+		warning('FUN_UPDATE:: Detected lucky breakdown')
 		break
 	end
 end 
 iter = j;
 if iter == it
-	warning('LANCZOS_FUN_UPDATE:: Reached maximum number of iterations')
+	warning('FUN_UPDATE:: Reached maximum number of iterations')
 end
 
 Um = Um(:, 1:size(Xm, 1));

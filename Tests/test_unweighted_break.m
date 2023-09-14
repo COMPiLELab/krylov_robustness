@@ -90,7 +90,7 @@ for ii = 1:2 % Loop over benchmarks: miscellaneous graphs and transportation net
 			[~, ~, Aorg] = MIOBIBreakEdge2(A,k,num_eig_miobi);
 			[t1, t2, ~] = find(spones(spones(A) - spones(Aorg)));
 			[U, B] = edge2low_rank([t1 t2], n);
-		    delta_trace = lanczos_robustness_update(A, full(U), B, tol * nrm);
+		    delta_trace = trace_fun_update(A, full(U), B, tol * nrm);
 			time_miobi = toc;
 		    
 		    [~,ind] = sort(centrality,'descend');
@@ -119,7 +119,7 @@ for ii = 1:2 % Loop over benchmarks: miscellaneous graphs and transportation net
 		    HURISTICEdges = [ind_top_nodes(EE(:,1)) ind_top_nodes(EE(:,2))];
 		    
 		    [U, B] = edge2low_rank(HURISTICEdges, n);
-			delta_trace = lanczos_robustness_update(A, full(U), B, tol * nrm);
+			delta_trace = trace_fun_update(A, full(U), B, tol * nrm);
 			time_eigenv = toc;
 			Results_TAB = [Results_TAB; ...
 		        {method, name,n,nnz(A)/2,k,"mult",time_eigenv,delta_trace/trexp,budget_size}];

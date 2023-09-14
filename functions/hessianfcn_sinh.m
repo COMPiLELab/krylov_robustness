@@ -1,4 +1,4 @@
-function Hes = hessianfcn_fconnectivity(X, A, Omega, f, tol, it)                                      
+function Hes = hessianfcn_sinh(X, A, Omega, f, tol, it)                                      
 % Computing the Hessian
 	n = size(A, 1);
 	Hes = zeros(size(Omega, 1));
