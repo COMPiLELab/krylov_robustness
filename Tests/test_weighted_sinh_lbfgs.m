@@ -72,7 +72,6 @@ for i = 1 : length(Countries)
     	temp = zeros(size(E, 1), 1);
     	for j = 1:size(E, 1)
 	    	h = E(j, 1); k = E(j, 2);
-    		%temp(j) = trace( Vm{col(k)}(:, 1:size(Xm{j}, 2))' * Um{row(h)}(:, 1:size(Xm{j}, 1)) * Xm{j} );
 	    	temp(j) = diffA(h, k);
 	    end
     else

@@ -3,7 +3,7 @@
 addpath ../functions
 
 %-------------------------- SETTINGS--------------------------------------------------------------------
-tol_param = 1e-6; 
+tol_param = 1e-8; 
 poles = inf; 
 it = 100; 	       		% max iteration of the Krylov method
 debug = 0;

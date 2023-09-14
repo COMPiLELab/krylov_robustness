@@ -61,18 +61,8 @@ function [f, gr] = fun_and_grad_krylov_sinh(X, A, Omega, fun, dfun, dfA, tol, it
 		U = Qu * V(:, ind);
 	end
 
-	if isequal(fun, @exp)
-		[dfXm, ~, ~, Um] = fun_update(A, U, B, @exp, tol * exp(nrmA), it, false);
-		f = -trace(dfXm);
-	else
-		if nargin(dfun) == 1
-			[dfXm, ~, ~, Um] = fun_update(A, U, B, dfun, tol * dfun(nrmA), it, false);
-		else
-			[dfXm, ~, ~, Um] = fun_update(A, U, B, dfun, tol * dfun(nrmA, 0), it, false);
-		end	
-		[fXm, ~, ~, ~] = fun_update(A, U, B, fun, tol * fun(nrmA), it, false);	
-		f = -trace(fXm);
-	end
+	[dfXm, ~, ~, Um] = fun_update(A, U, B, dfun, tol * dfun(nrmA), it, false); % Gradient evaluation
+	f = -trace_fun_update(A, U, B, tol * fun(nrmA), it, false, fun); % Objective function evaluation
 
 	DdfA = Um(Omega(:, 1), :) * dfXm * Um(Omega(:, 2), :)';
 	DdfA = diag(DdfA);

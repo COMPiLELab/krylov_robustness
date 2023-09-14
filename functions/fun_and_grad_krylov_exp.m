@@ -80,10 +80,9 @@ function [f, gr] = fun_and_grad_krylov_exp(X, A, Omega, eA, tol, it, debug)
 		U = Qu * V(:, ind);
 	end
 
-	[eXm, ~, ~, Um] = fun_update(A, U, B, @exp, tol * exp(nrmA), it, false);
-	f = -trace(eXm);
-
-	DeA = Um(Omega(:, 1), :) * eXm * Um(Omega(:, 2), :)';
+	[eXm, ~, ~, Um] = fun_update(A, U, B, @exp, tol * exp(nrmA), it, false); % Low-rank approximation of the update of the matrix exponential
+	f = -trace(eXm); % Objective function evaluation
+	DeA = Um(Omega(:, 1), :) * eXm * Um(Omega(:, 2), :)'; % Gradient evaluation
 	DeA = diag(DeA);
 	
 	gr = -2*(eA + DeA);

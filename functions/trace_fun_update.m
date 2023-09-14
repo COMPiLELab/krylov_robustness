@@ -1,5 +1,5 @@
-function [Xm, iter, lucky] = trace_fun_update(A, U, B, tol, it, debug)
-% Return the approximation of trace(expm(A + U * B * U') - expm(A)) computed with the Lanczos method 
+function [Xm, iter, lucky] = trace_fun_update(A, U, B, tol, it, debug, fun)
+% Return the approximation of trace(funm(A + U * B * U') - funm(A)) computed with the Lanczos method 
 %
 %---------------INPUT----------------------------------------------------------------------------------------------------------------
 %
@@ -9,10 +9,11 @@ function [Xm, iter, lucky] = trace_fun_update(A, U, B, tol, it, debug)
 % tol             (optional) threshold for the (heuristic) stopping criterion, default tol = 1e-12
 % it              (optional) max number of iterations, default it = 100
 % debug           (optional) allows to print either the heuristic or the true error (the second one is expensive), default debug = 0  
+% fun			  scalar function (default exp)
 %
 %---------------OUTPUT--------------------------------------------------------------------------------------------------------------
 %
-% Xm          Approximation of trace(expm(A + U * B * U') - expm(A))
+% Xm          Approximation of trace(funm(A + U * B * U') - funm(A))
 % iter		  number of iterations needed to converge
 % lucky		  flag indicating that a lucky breakdown has occurred
 %
@@ -29,11 +30,21 @@ if ~exist('debug', 'var')
 	debug = 0;
 end
 
+if ~exist('fun', 'var')
+	fun = @exp;
+end
+
 if size(U, 1) <= 130
 	fA = full(A);
 	fAt = fA + U * B * U';
 	fAt = (fAt + fAt')/2;
-	Xm = trace(expm(fAt) - expm(fA));
+	d1 = sort(eig(fAt));
+	d2 = sort(eig(fA));
+	if isequal(fun, @exp)
+		Xm = sum(exp(d1) .* (1 - exp(d2 - d1)));
+	else 
+		Xm = sum(fun(d1) - fun(d2));
+	end	
 	iter = 0;
 	lucky = 0;
 	return
@@ -71,11 +82,21 @@ for j = 1:it
 	% Compute the trace of the core factor of the update
 	d1 = sort(eig(tGm));
 	d2 = sort(eig(Gm));
-	Xm = sum(exp(d1) .* (1 - exp(d2 - d1)));
+	if isequal(fun, @exp)
+		Xm = sum(exp(d1) .* (1 - exp(d2 - d1)));
+	else 
+		Xm = sum(fun(d1) - fun(d2));
+	end	
 	
 	if debug == 3	
 		if ~exist('true_quantity', 'var')
-			true_quantity = trace(expm(full(A) + U * B * U') - expm(full(A)));
+			t1 = sort(eig(full(A) + U * B * U'));
+			t2 = sort(eig(full(A)));
+			if isequal(fun, @exp)
+				true_quantity = sum(exp(t1) .* (1 - exp(t2 - t1)));
+			else 
+				true_quantity = sum(fun(t1) - fun(t2));
+			end	
 		end
 	fprintf('It: %d, err = %e\n', j, abs(true_quantity - Xm)/abs(true_quantity));
 	end
