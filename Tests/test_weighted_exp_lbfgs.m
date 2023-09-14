@@ -13,7 +13,7 @@ heur_method = 'min';	% ordering used to rank edges when centrality measures of n
 total_weight = 10; 		% budget for the total weight variation
 f = @exp;
 methods = ["tuning", "rewire", "add"]; 
-ndense = 500; % if the size of the graph is smaller than this threshold then dense arithmetic is used
+ndense = 500; % if the size of the graph is smaller than this threshold then dense arithmetic is used to compute the initial entries of expm(A)
 
 % fmincon options
 maxiter = 200;     % max iteration of LBFGS
@@ -45,6 +45,7 @@ for i = 1 : length(Countries)
     centrality = compute_centrality(A, 'eig');
     nrm = f(normest(A, 1e-2)); % Estimated norm of f(A)
     tol = tol_param * nrm;
+    
     
     tic
     % first reduction of the search space

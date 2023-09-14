@@ -13,7 +13,7 @@ heur_method = 'min';	% ordering used to rank edges when centrality measures of n
 total_weight = 10; 		% budget for the total weight variation
 f = @exp;
 methods = ["tuning", "rewire", "add"];
-ndense = 500; % if the size of the graph is smaller than this threshold then dense arithmetic is used
+ndense = 500; % if the size of the graph is smaller than this threshold then dense arithmetic is used to compute the initial entries of expm(A)
 
 %--------------------------------Selection of the graph-------------------------------------------------
 Problems = load('../datasets_paper/voltage_adjacencies_average_2.mat');

@@ -51,8 +51,10 @@ for ii = 1:2 % Loop over benchmarks: miscellaneous graphs and transportation net
 		f = @exp;
 		
 		%%% We use eigenvector centrality to choose search space
+		tic;
 		centrality = compute_centrality(A,'eig');
 		centrality_order = {'mult','min'}; % first and second orders based on the eigenvector centrality (see the manuscript)
+		time_centrality = toc;
 
 		for k = budget_array
 		
@@ -72,6 +74,7 @@ for ii = 1:2 % Loop over benchmarks: miscellaneous graphs and transportation net
 	            size_search_space = Q + k;
 	            [edges, delta_trace, A_new] = greedy_krylov(A, k, Q, centrality, centrality_order{2}, tol * nrm, it, poles, debug,'break');
 	            time_greedy_krylov_break = toc;
+	            time_greedy_krylov_break = time_greedy_krylov_break + time_centrality;
  
 	            Results_TAB = [Results_TAB; ...
 	            {method, name,n,nnz(A)/2,size_search_space,...
@@ -92,6 +95,7 @@ for ii = 1:2 % Loop over benchmarks: miscellaneous graphs and transportation net
 			[U, B] = edge2low_rank([t1 t2], n);
 		    delta_trace = trace_fun_update(A, full(U), B, tol * nrm);
 			time_miobi = toc;
+			time_miobi = time_miobi + time_centrality;
 		    
 		    [~,ind] = sort(centrality,'descend');
 		    search_space_miobi = nnz(A)/2;
@@ -121,6 +125,7 @@ for ii = 1:2 % Loop over benchmarks: miscellaneous graphs and transportation net
 		    [U, B] = edge2low_rank(HURISTICEdges, n);
 			delta_trace = trace_fun_update(A, full(U), B, tol * nrm);
 			time_eigenv = toc;
+			time_eigenv = time_eigenv + time_centrality;
 			Results_TAB = [Results_TAB; ...
 		        {method, name,n,nnz(A)/2,k,"mult",time_eigenv,delta_trace/trexp,budget_size}];
 			if debug 

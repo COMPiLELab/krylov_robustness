@@ -20,7 +20,7 @@ fun_M = @(x, k) (mod(k, 2) == 0) * sinh(x) + (mod(k, 2) == 1) * cosh(x); % usefu
 
 
 methods = ["tuning", "rewire", "add"]; %methods = "rewire";
-ndense = 500; % if the size of the graph is smaller than this threshold then dense arithmetic is used
+ndense = 500; % if the size of the graph is smaller than this threshold then dense arithmetic is used to compute the initial entries of cosh(A)
 
 % fmincon options
 maxiter = 200;     % max iteration of LBFGS

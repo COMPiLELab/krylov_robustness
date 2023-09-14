@@ -18,7 +18,7 @@ dfM = @(M) .5*(expm(M) + expm(-M)); % matrix version of the derivative function
 fun_M = @(x, k) (mod(k, 2) == 0) * sinh(x) + (mod(k, 2) == 1) * cosh(x); % useful only for debugging reason
 
 methods = ["tuning", "rewire", "add"];
-ndense = 500; % if the size of the graph is smaller than this threshold then dense arithmetic is used
+ndense = 500; % if the size of the graph is smaller than this threshold then dense arithmetic is used to compute the initial entries of cosh(A)
 
 %--------------------------------Selection of the graph-------------------------------------------------
 Problems = load('../datasets_paper/voltage_adjacencies_average_2.mat');

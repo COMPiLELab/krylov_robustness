@@ -1,5 +1,5 @@
 function [tr_new, res, it] = mc_trace(Afun, n, tol, maxit, isAreal, debug)
-% Trace estimation of the (possibly black-box) matrix Afun via a Monte Carlo approach (convergence ~ 1/maxit) 
+% Trace estimation of the (possibly black-box) matrix Afun via a Monte Carlo approach (convergence ~ 1/maxit^2) 
 %
 %--------------------------------------------INPUT----------------------------------------------
 %
