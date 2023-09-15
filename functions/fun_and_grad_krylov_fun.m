@@ -1,4 +1,4 @@
-function [f, gr] = fun_and_grad_krylov_sinh(X, A, Omega, fun, dfun, dfA, tol, it, debug, fun_M)
+function [f, gr] = fun_and_grad_krylov_fun(X, A, Omega, fun, dfun, dfA, tol, it, debug, fun_M)
 % Evaluates the objective function f(Delta) = trace(f(A)) - tr(f(A + Delta)) and 
 % its gradient by means of a polynomial Krylov subspace method and the fact that the
 % trace of the Frechet derivative in the direction ij corresponds to the ij entry of the 

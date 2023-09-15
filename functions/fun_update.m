@@ -50,9 +50,12 @@ elseif isequal(fun, @log)
 	f = @(M) logm(M);
 elseif isequal(fun, @sqrt)
 	f = @(M) sqrtm(M);
+elseif isequal(fun, @sinh)
+	f = @(M) (expm(M)-expm(-M))/2;
+elseif isequal(fun, @cosh)
+	f = @(M) (expm(M)+expm(-M))/2;
 else
-	f = @(M) funm(M, fun);
-	%f = @(M) fun_diag(M, fun);
+	f = @(M) funm(M, f);
 end
 
 

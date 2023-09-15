@@ -1,4 +1,4 @@
-% Test the performances of the interior point scheme incorporating the Hessian for the tuning, rewire, and addition problems on power grid graphs with f=sinh
+% Test the performances of the interior point scheme incorporating the Hessian for the tuning, rewire, and addition problems on power grid graphs with f=cosh
 
 addpath ../functions
 
@@ -12,10 +12,10 @@ search_space = 100;		% Size of the first reduction of the search space, based on
 heur_method = 'min';	% ordering used to rank edges when centrality measures of node are computed
 total_weight = 10; 		% budget for the total weight variation
 
-f = @sinh; % function
-df = @cosh; % derivative
-dfM = @(M) .5*(expm(M) + expm(-M)); % matrix version of the derivative function
-fun_M = @(x, k) (mod(k, 2) == 0) * sinh(x) + (mod(k, 2) == 1) * cosh(x); % useful only for debugging reason
+f = @cosh; % function
+df = @sinh; % derivative
+dfM = @(M) .5*(expm(M) - expm(-M)); % matrix version of the derivative function
+fun_M = @(x, k) (mod(k, 2) == 1) * sinh(x) + (mod(k, 2) == 0) * cosh(x); % useful only for debugging reason
 
 methods = ["tuning", "rewire", "add"];
 ndense = 500; % if the size of the graph is smaller than this threshold then dense arithmetic is used to compute the initial entries of cosh(A)
@@ -214,7 +214,7 @@ for i = 1 : length(Countries)
         data_time(hkl, i) = t1+t2;
         data_it(hkl, i) = output.iterations;
         
-        filepath = sprintf('../Results/results_weighted_sinh_hessian_%s.csv', string(date));
+        filepath = sprintf('../Results/results_weighted_cosh_hessian_%s.csv', string(date));
 	    save(filepath,'results','-mat');
         
         fprintf('\n');
@@ -224,7 +224,7 @@ for i = 1 : length(Countries)
 
 end
 
-dlmwrite('../Results/results_weighted_sinh_hessian_score.dat', data, '\t');
-dlmwrite('../Results/results_weighted_sinh_hessian_time.dat', data_time, '\t');
-dlmwrite('../Results/results_weighted_sinh_hessian_it.dat', data_it, '\t');
+dlmwrite('../Results/results_weighted_cosh_hessian_score.dat', data, '\t');
+dlmwrite('../Results/results_weighted_cosh_hessian_time.dat', data_time, '\t');
+dlmwrite('../Results/results_weighted_cosh_hessian_it.dat', data_it, '\t');
 

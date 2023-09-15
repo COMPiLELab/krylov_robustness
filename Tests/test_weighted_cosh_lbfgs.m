@@ -1,4 +1,4 @@
-% Test the performances of the interior point scheme incorporating the Hessian for the tuning, rewire, and addition problems on power grid graphs with f=sinh
+% Test the performances of the interior point scheme incorporating the L-BFSGS approximation of the Hessian for the tuning, rewire, and addition problems on power grid graphs with f=cosh
 
 addpath ../functions
 
@@ -12,28 +12,42 @@ search_space = 100;		% Size of the first reduction of the search space, based on
 heur_method = 'min';	% ordering used to rank edges when centrality measures of node are computed
 total_weight = 10; 		% budget for the total weight variation
 
-f = @sinh; % function
-df = @cosh; % derivative
-dfM = @(M) .5*(expm(M) + expm(-M)); % matrix version of the derivative function
-fun_M = @(x, k) (mod(k, 2) == 0) * sinh(x) + (mod(k, 2) == 1) * cosh(x); % useful only for debugging reason
+f = @cosh; % function
+df = @sinh; % derivative
+dfM = @(M) .5*(expm(M) - expm(-M)); % matrix version of the derivative function
+fun_M = @(x, k) (mod(k, 2) == 1) * sinh(x) + (mod(k, 2) == 0) * cosh(x); % useful only for debugging reason
 
-methods = ["tuning", "rewire", "add"];
+
+methods = ["tuning", "rewire", "add"]; %methods = "rewire";
 ndense = 500; % if the size of the graph is smaller than this threshold then dense arithmetic is used to compute the initial entries of cosh(A)
+
+% fmincon options
+maxiter = 200;     % max iteration of LBFGS
+options = optimoptions('fmincon',                       ...
+                       'SpecifyObjectiveGradient',true, ...
+                       'Display','off', ... 
+                       'HessianApproximation','lbfgs',  ...
+                       'ObjectiveLimit', -1e100, ...
+                       'ConstraintTolerance', 1e-10, ...
+                       'OptimalityTolerance', 1e-3, ...
+                       'MaxIterations', maxiter); 
+
+% function results = run_tuning_on_datasets(modifiable_edges, search_space, heur_method, total_weight,up_bound)
 
 %--------------------------------Selection of the graph-------------------------------------------------
 Problems = load('../datasets_paper/voltage_adjacencies_average_2.mat');
 Countries = fieldnames(Problems);
 Countries = {Countries{[13, 5, 15, 19, 17, 4, 9, 11, 7, 1]}}; % Restriction to the subset of countries considered in the paper
 
+
 data = zeros(length(methods), length(Countries));
 data_time = data;
 data_it = data;
-
 for i = 1 : length(Countries)
     A = getfield(Problems, Countries{i});
     A = A / max(A(:)); 
-
-    trfA = sum(f(eig(full(A)))); % since the size is moderate we can compute the trace of f(A) via the eigenvalues
+    
+    trfA = sum(f(eig(full(A)))); % since the size is moderate we can compute the trace of the matrix function via the eigenvalues
 
     %---------------------------Computation of the set F (called E in the code)------------------------------
     n = length(A);
@@ -42,7 +56,7 @@ for i = 1 : length(Countries)
     if nargin(df) == 1
     	nrm_df = df(normest(A, 1e-2)); % Estimated norm of df(A)
     else
-        nrm_df = df(normest(A, 1e-2), 0); % Estimated norm of df(A)
+    	nrm_df = df(normest(A, 1e-2), 0); % Estimated norm of df(A)
     end	
     tol = tol_param * nrm;
     tol_df = tol_param * nrm_df;
@@ -51,7 +65,7 @@ for i = 1 : length(Countries)
     % first reduction of the search space
     E = find_top_edges(A, centrality, search_space, heur_method); % existing edges with top centrality measures
     
-    % second (and finale) reduction of the search space based on the magnitude of the component in the gradient
+    % second (and final) reduction of the search space based on the magnitude of the component in the gradient
     if n < ndense
     	diffA = dfM(full(A));
     	temp = zeros(size(E, 1), 1);
@@ -110,7 +124,7 @@ for i = 1 : length(Countries)
             E1 = find_top_edges(A, centrality, search_space/2, heur_method); % existing edges with top centrality measures
             E2 = find_top_missing_edges(A, centrality, search_space/2, heur_method); % existing edges with top centrality measures
 			if n < ndense
-    			diffA = dfM(full(A));
+				diffA = dfM(full(A));
 				temp = zeros(size(E, 1), 1);
 				for j = 1:size(E1, 1)
 	            	h = E1(j, 1); k = E1(j, 2);
@@ -159,7 +173,7 @@ for i = 1 : length(Countries)
             
             % second (and final) reduction of the search space based on the magnitude of the component in the gradient
             if n < ndense
-    			diffA = dfM(full(A));
+                diffA = dfM(full(A));
 				temp = zeros(size(E, 1), 1);
 				for j = 1:size(E, 1)
 	            	h = E(j, 1); k = E(j, 2);
@@ -186,18 +200,10 @@ for i = 1 : length(Countries)
             end
         end
         
-            % fmincon options
-			maxiter = 200;     % max iteration of the interior point method
-			options = optimoptions('fmincon',                       ...
-           'SpecifyObjectiveGradient',true, ...
-           'Display','off', ... 
-           'HessianFcn', @(x, lambda) hessianfcn_fun(x, A, E, df, tol, it),  ...
-           'ObjectiveLimit', -1e100, ...
-           'ConstraintTolerance', 1e-10, ...
-           'OptimalityTolerance', 1e-3, ...
-           'MaxIterations', maxiter); 
+
         tic
-  
+        
+    
         [x, fval, exitflag, output, lambda, grad] =  fmincon(        ...
                     @(xx) fun_and_grad_krylov_fun(xx, A, E, f, df, dfA, tol, it, false, fun_M),               ... %@(x) fun_and_grad(x,A,Omega),          ...
                     x0,                                         ...
@@ -208,23 +214,23 @@ for i = 1 : length(Countries)
                     [], options);
         XX = full(sparse(E(:, 1), E(:, 2), x(:)));
         XX(n, n) = 0; XX = XX + XX';
-        t2 = toc;
+        t2 = toc; 
         results{i,hkl} = {Countries{i},n, method, E,x,A(sub2ind(size(A),E(:,1),E(:,2))), -fval/trfA, t1+t2};
         data(hkl, i) = -fval/trfA;
         data_time(hkl, i) = t1+t2;
         data_it(hkl, i) = output.iterations;
         
-        filepath = sprintf('../Results/results_weighted_sinh_hessian_%s.csv', string(date));
+        filepath = sprintf('../Results/results_weighted_cosh_lbfgs_%s.csv', string(date));
 	    save(filepath,'results','-mat');
         
         fprintf('\n');
         fprintf('%d\t%s\t\t%s\t\t\t\t%.2f%%\t\t%.2f\t It: %d\n', n,Countries{i},method,(-fval/trfA)*100,t1+t2,output.iterations);
 
 	end
-
 end
 
-dlmwrite('../Results/results_weighted_sinh_hessian_score.dat', data, '\t');
-dlmwrite('../Results/results_weighted_sinh_hessian_time.dat', data_time, '\t');
-dlmwrite('../Results/results_weighted_sinh_hessian_it.dat', data_it, '\t');
+dlmwrite('../Results/results_weighted_cosh_lbfgs_score.dat', data, '\t');
+dlmwrite('../Results/results_weighted_cosh_lbfgs_time.dat', data_time, '\t');
+dlmwrite('../Results/results_weighted_cosh_lbfgs_it.dat', data_it, '\t');
+
 
