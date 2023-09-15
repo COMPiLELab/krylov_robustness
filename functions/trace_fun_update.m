@@ -117,7 +117,9 @@ for j = 1:it
 		Xstop = [Xstop(2:d), Xm];
 	end
 	if lucky 
-		warning('TRACE_FUN_UPDATE:: Detected lucky breakdown')
+        if debug
+		    warning('TRACE_FUN_UPDATE:: Detected lucky breakdown')
+        end    
 		break
 	end
 end 

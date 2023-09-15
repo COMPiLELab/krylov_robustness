@@ -9,17 +9,19 @@ Massei, Stefano, and Francesco Tudisco. "Optimizing network robustness via Krylo
 
 HOW TO RUN THE TESTS OF THE MANUSCRIPT
 
-The repository "Tests" contain 6 scripts that replicates the numerical test reported in the manuscript. In particular:
+The repository "Tests" contain 8 scripts that replicates the numerical test reported in the manuscript. In particular:
 
 Discrete optimization
-test_unweighted_break ---> greedy strategies for the deletion problem on general and transportation networks (Manuscript's section 5.1)
-test_unweighted_make  ---> greedy strategies for the addition problem on general and transportation networks (Manuscript's section 5.2)
+test_unweighted_break ---> greedy strategies for the deletion problem on general and transportation networks (Manuscript's section 5.1, Table 2)
+test_unweighted_break_budget ---> greedy strategies for the deletion problem on transportation networks with varying budget (Manuscript's section 5.1, Figures 1 and 2)
+test_unweighted_make  ---> greedy strategies for the addition problem on general and transportation networks (Manuscript's section 5.2, Table 3)
+test_unweighted_make_budget ---> greedy strategies for the addition problem on transportation networks with varying budget (Manuscript's section 5.1, Figures 3 and 4)
 
 Continuous optimization
-test_weighted_exp_lbfgs ---> addition, tuning, and rewiring via IP with l-bfgs to optimize trace(exp(A)) (Manuscript's section 6)
-test_weighted_exp_hessian ---> addition, tuning, and rewiring via IP with Hessian to optimize trace(exp(A)) (Manuscript's section 6)
-test_weighted_sinh_lbfgs ---> addition, tuning, and rewiring via IP with l-bfgs to optimize trace(sinh(A)) (Manuscript's section 6)
-test_weighted_sinh_hessian ---> addition, tuning, and rewiring via IP with Hessian to optimize trace(sinh(A)) (Manuscript's section 6)
+test_weighted_exp_lbfgs ---> addition, tuning, and rewiring via IP with l-bfgs to optimize trace(exp(A)) (Manuscript's section 6, Table 5)
+test_weighted_exp_hessian ---> addition, tuning, and rewiring via IP with Hessian to optimize trace(exp(A)) (Manuscript's section 6, Table 5)
+test_weighted_sinh_lbfgs ---> addition, tuning, and rewiring via IP with l-bfgs to optimize trace(sinh(A)) (Manuscript's section 6, Table 6)
+test_weighted_sinh_hessian ---> addition, tuning, and rewiring via IP with Hessian to optimize trace(sinh(A)) (Manuscript's section 6, Table 6)
 
 EXTERNAL CODE
 
