@@ -23,9 +23,15 @@ intersection_sizes = zeros(0, 4); % store the cardinality of the edges that are 
 for ii = 1:2 % Loop over benchmarks: miscellaneous graphs and transportation networks
 
 	data = datasets{ii}; 
-	l = 3;
+
+	% Restricts to datasets considered in the manuscript
+	if ii == 1
+		data_range = [3, 4, 6, 9, 10, 11, 12, 15, 16, 17, 18];
+	else 
+		data_range = [3:13];
+    end
     	
-	for i =  l:length(data) %start from 3 as first two are '.' and '..'
+	for i =  data_range
 		if ii == 1
 			filename = sprintf('../datasets_paper/Misc/%s', data(i).name);
 		else	
@@ -47,7 +53,7 @@ for ii = 1:2 % Loop over benchmarks: miscellaneous graphs and transportation net
 		n = size(A,1);
 		
 		%%% we estimate norm and the trace of exp A for the stopping criterion 
-		nrm = exp(normest(A));
+		nrm = exp(normest(A, 1e-2));
 	   	trexp = trace_exp(A);
 
 		f = @exp;

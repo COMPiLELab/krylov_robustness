@@ -22,7 +22,7 @@ The repository "Tests" contain 8 scripts that replicates the numerical test repo
 ```test_unweighted_break``` &rarr; greedy strategies for the deletion problem on general and transportation networks (Manuscript's section 5.1, Table 2)  
 ```test_unweighted_break_budget``` &rarr; greedy strategies for the deletion problem on transportation networks with varying budget (Manuscript's section 5.1, Figures 1 and 2)  
 ```test_unweighted_make```  &rarr; greedy strategies for the addition problem on general and transportation networks (Manuscript's section 5.2, Table 3)  
-```test_unweighted_make_budget``` &rarr; greedy strategies for the addition problem on transportation networks with varying budget (Manuscript's section 5.1, Figures 3 and 4)  
+```test_unweighted_make_budget``` &rarr; greedy strategies for the addition problem on transportation networks with varying budget (Manuscript's section 5.2, Figures 3 and 4)  
 
 ### Continuous optimization  
 ```test_weighted_exp_lbfgs``` &rarr; addition, tuning, and rewiring via IP with l-bfgs to optimize trace(exp(A)) (Manuscript's section 6, Table 5)   
