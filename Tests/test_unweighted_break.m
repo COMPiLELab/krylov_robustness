@@ -154,6 +154,7 @@ for ii = 1:2 % Loop over benchmarks: miscellaneous graphs and transportation net
 
 	end
 end
+dlmwrite('../Results/results_intersection_break.dat', intersection_sizes, '\t');
 
 %--------------- Auxiliary functions --------------------
 function ind = max_connected_component(A)
