@@ -39,7 +39,7 @@ for i =  [3, 6, 7, 9, 11, 12] % Selected road networks
 	n = size(A,1);
 	
 	%%% we estimate norm and the trace of exp A for the stopping criterion 
-	nrm = exp(normest(A), 1e-2);
+	nrm = exp(normest(A, 1e-2));
    	trexp = trace_exp(A);
 
 	f = @exp;
